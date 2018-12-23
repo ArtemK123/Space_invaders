@@ -1,11 +1,17 @@
-#include "widget.h"
+#include "window.h"
 #include <QApplication>
+#include <iostream>
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    Widget w;
-    w.show();
+    try {
+        QApplication a(argc, argv);
+        Window w;
+        w.show();
 
-    return a.exec();
+        return a.exec();
+
+    } catch(string e) {
+        cout<<e<<endl;
+    }
 }

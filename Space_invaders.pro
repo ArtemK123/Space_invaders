@@ -25,16 +25,33 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-        main.cpp \
-        widget.cpp
+    main.cpp \
+    classes.cpp \
+    texture.cpp \
+    units.cpp \
+    bullets.cpp \
+    window.cpp \
+    game.cpp
 
 HEADERS += \
-        widget.h
+    classes.h \
+    texture.h \
+    units.h \
+    bullets.h \
+    window.h \
+    game.h \
+    interfaces.h
 
 FORMS += \
-        widget.ui
+    window.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    sources/sprite_sheet.png
+
+RESOURCES += \
+    source_files.qrc

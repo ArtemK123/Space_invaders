@@ -2,21 +2,34 @@
 #define WIDGET_H
 
 #include <QWidget>
+#include <game.h>
+#include <QKeyEvent>
 
 namespace Ui {
-class Widget;
+class Window;
 }
 
-class Widget : public QWidget
+class Window : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit Widget(QWidget *parent = nullptr);
-    ~Widget();
+    explicit Window(QWidget *parent = nullptr);
+    ~Window() override;
 
 private:
-    Ui::Widget *ui;
+    Ui::Window *ui;
+    QTimer* m_timer;
+    Game* m_game;
+
+    void paintEvent(QPaintEvent*) override;
+    void keyPressEvent(QKeyEvent* e) override;
+    void keyReleaseEvent(QKeyEvent* e) override;
+
+private slots:
+    void timerTick();
+
 };
+
 
 #endif // WIDGET_H

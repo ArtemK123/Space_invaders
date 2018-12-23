@@ -1,2 +1,6 @@
-<!DOCTYPE RCC>
-<RCC version="1.0"/>
+<RCC>
+    <qresource prefix="/">
+        <file>sources/invader_31.png</file>
+        <file>sources/sprite_sheet.png</file>
+    </qresource>
+</RCC>
