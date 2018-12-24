@@ -4,7 +4,8 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT += core gui
+QT += multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -31,7 +32,8 @@ SOURCES += \
     units.cpp \
     bullets.cpp \
     window.cpp \
-    game.cpp
+    game.cpp \
+    sound.cpp
 
 HEADERS += \
     classes.h \
@@ -40,7 +42,8 @@ HEADERS += \
     bullets.h \
     window.h \
     game.h \
-    interfaces.h
+    interfaces.h \
+    sound.h
 
 FORMS += \
     window.ui
@@ -50,8 +53,20 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-DISTFILES += \
-    sources/sprite_sheet.png
-
 RESOURCES += \
     source_files.qrc
+
+DISTFILES += \
+    sources/sprite_sheet.png \
+    sources/high_scores.txt \
+    sources/sounds/spaceinvaders2.ram \
+    sources/sounds/explosion.wav \
+    sources/sounds/fastinvader1.wav \
+    sources/sounds/fastinvader2.wav \
+    sources/sounds/fastinvader3.wav \
+    sources/sounds/fastinvader4.wav \
+    sources/sounds/invaderkilled.wav \
+    sources/sounds/shoot.wav \
+    sources/sounds/ufo_highpitch.wav \
+    sources/sounds/ufo_lowpitch.wav \
+    sources/sounds/spaceinvaders1.mpeg

@@ -21,6 +21,7 @@ private:
     Ui::Window *ui;
     QTimer* m_timer;
     Game* m_game;
+    shared_ptr<Pressed_Buttons> m_buttons;
 
     void paintEvent(QPaintEvent*) override;
     void keyPressEvent(QKeyEvent* e) override;

@@ -1,3 +1,4 @@
+
 #include "texture.h"
 
 Texture::Texture(int x, int y) :

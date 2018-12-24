@@ -9,7 +9,7 @@
 
 using namespace std;
 
-struct Pressed_Buttoms
+struct Pressed_Buttons
 {
     bool left = false;
     bool right = false;
