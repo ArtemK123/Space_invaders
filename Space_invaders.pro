@@ -33,7 +33,8 @@ SOURCES += \
     bullets.cpp \
     window.cpp \
     game.cpp \
-    sound.cpp
+    sound.cpp \
+    record_file.cpp
 
 HEADERS += \
     classes.h \
@@ -43,10 +44,15 @@ HEADERS += \
     window.h \
     game.h \
     interfaces.h \
-    sound.h
+    sound.h \
+    record_file.h
 
 FORMS += \
-    window.ui
+    menu.ui \
+    records.ui \
+    new_record.ui \
+    window.ui \
+    game.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

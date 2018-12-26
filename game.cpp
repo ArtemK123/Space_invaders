@@ -1,19 +1,21 @@
 #include "game.h"
 #include <fstream>
 
-Game::Game(shared_ptr<Pressed_Buttons> buttons)
+Game::Game(shared_ptr<Pressed_Buttons> buttons, QObject* parent)
 {
+    m_parent = parent;
     m_frame_count = 0;
     m_speed = 5;
     m_lives = 3;
     m_score = 0;
+    m_highscore = 0;
     m_endgame = false;
 
     m_player = unique_ptr<Player>(new Player(285, 500, m_speed));
     m_player_bullet = nullptr;
     m_ufo = nullptr;
     m_buttons = buttons;
-    m_sound_manager = unique_ptr<Sound_Manager>(new Sound_Manager());
+    m_sound_manager = unique_ptr<Sound_Manager>(new Sound_Manager(m_parent));
     m_sound_manager->play();
 }
 
@@ -27,11 +29,13 @@ void Game::start() {
     checkDifficult();
     m_frame_count = 0;
     m_score = 0;
+    m_ufo = nullptr;
     m_endgame = false;
     m_lives = 3;
+    m_player->relive();
     m_player->setX(285);
     m_is_pause = false;
-    readHighScore(source_path + "/high_scores.txt");
+    readHighScore();
 }
 
 void Game::pause() {
@@ -66,7 +70,7 @@ void Game::create_textures() {
 void Game::printNumber(int value, int start_x, int start_y, QPainter& painter) {
     vector<shared_ptr<QPixmap>> images;
     QPixmap image;
-    QPixmap sprite_sheet = QPixmap(":/sources/sprite_sheet.png");
+    QPixmap sprite_sheet = QPixmap(":/sources/images/sprite_sheet.png");
     for (int i = 0; i < 10; i++) {
         image = sprite_sheet.copy(156 + i * 20, 266, 10, 14);
         images.push_back(shared_ptr<QPixmap>(new QPixmap(image)));
@@ -88,40 +92,26 @@ void Game::printNumber(int value, int start_x, int start_y, QPainter& painter) {
     }
 }
 
-void Game::readHighScore(string path) {
-    ifstream score_file(path);
-    int numb = -1;
-    if (!score_file.is_open()) {
-        throw string("while reading highscore file not found");
-    }
-    score_file>>numb;
-    score_file.close();
-    if (numb == -1) {
-        throw string("Error while reading highscore");
+void Game::readHighScore() {
+    vector<pair<string, int>> records;
+    records = Record_file::getRecords();
+    if (records.size() > 0) {
+        m_highscore = records[0].second;
     }
     else {
-        m_highscore = numb;
+        m_highscore = 0;
     }
-}
-
-void Game::writeHighScore(string path) {
-    ofstream score_file(path);
-    if (!score_file.is_open() || m_highscore <= 0) {
-        throw string("Error while writing highscore");
-    }
-    score_file<<m_highscore;
-    score_file.close();
 }
 
 void Game::printTitle(QPainter& painter) {
-    QPixmap title(":/sources/title.png");
+    QPixmap title(":/sources/images/title.png");
     painter.drawPixmap(210, 5, title);
 }
 
 void Game::printScore(QPainter& painter) {
     int score_x = 20;
     int score_y = 10;
-    QPixmap sprite_sheet = QPixmap(":/sources/sprite_sheet.png");
+    QPixmap sprite_sheet = QPixmap(":/sources/images/sprite_sheet.png");
     QPixmap score_text = sprite_sheet.copy(56, 264, 74, 14);
     painter.drawPixmap(score_x, score_y, score_text);
     score_x += 10;
@@ -136,10 +126,13 @@ void Game::printScore(QPainter& painter) {
     printNumber(m_highscore, score_x, score_y, painter);
 }
 
+int Game::getScore() {
+    return m_score;
+}
 
 void Game::draw(QPainter& painter) {
     painter.setBrush(Qt::black);
-    painter.drawRect(0, 0, 20 * 30, 20 * 30);
+    painter.drawRect(0, 0, m_board_width, m_board_height);
     for (auto texture : m_textures) {
         texture->draw(painter);
     }
@@ -158,7 +151,12 @@ void Game::draw(QPainter& painter) {
         painter.drawPixmap(30 + i * 50, 560, m_player->getDefaultPicture());
     }
     if (m_ufo) {
-        m_ufo->draw(painter);
+        if (!m_ufo->is_dying()) {
+            m_ufo->draw(painter);
+        }
+        else if (m_ufo->is_dying()) {
+            printNumber(m_ufo->getPoints(), m_ufo->getX(), m_ufo->getY(), painter);
+        }
     }
     printScore(painter);
     printTitle(painter);
@@ -166,20 +164,23 @@ void Game::draw(QPainter& painter) {
 }
 
 void Game::updatePlayer() {
-    if (!m_buttons->left && m_buttons->right) {
-        m_player->setSpeed(m_speed, 0);
-        m_player->move();
-    }
-    if (m_buttons->left && !m_buttons->right) {
-        m_player->setSpeed(-m_speed, 0);
-        m_player->move();
-    }
-    if (m_buttons->space && m_player_bullet == nullptr) {
-        m_player_bullet = m_player->shoot();
-        m_sound_manager->shoot();
-    }
-    if (m_player->checkMapCollision(m_board_width, m_board_height)) {
-        m_player->moveBack();
+    m_player->update();
+    if (!m_player->is_dead() && !m_player->is_dying()) {
+        if (!m_buttons->left && m_buttons->right) {
+            m_player->setSpeed(m_speed, 0);
+            m_player->move();
+        }
+        if (m_buttons->left && !m_buttons->right) {
+            m_player->setSpeed(-m_speed, 0);
+            m_player->move();
+        }
+        if (m_buttons->space && m_player_bullet == nullptr) {
+            m_player_bullet = m_player->shoot();
+            m_sound_manager->shoot();
+        }
+        if (m_player->checkMapCollision(m_board_width, m_board_height)) {
+            m_player->moveBack();
+        }
     }
 }
 
@@ -249,7 +250,7 @@ void Game::updateEnemies() {
             {
                 enemy->animate();
                 enemy->move();
-                //m_sound_manager->background();
+                m_sound_manager->background();
                 if (enemy->checkMapCollision(m_board_width, m_board_height)) {
                     on_edge = true;
                 }
@@ -304,17 +305,21 @@ void Game::updateUfo() {
         else if (m_ufo->checkMapCollision(m_board_width, m_board_height)) {
             m_ufo = nullptr;
         }
-        else if (m_frame_count % 3 == 0) {
+        else if (!m_ufo->is_dying()){
             m_ufo->move();
+            m_ufo->update();
+        }
+        else if (m_ufo->is_dying()) {
+            m_ufo->update();
         }
     }
     else if (!m_ufo) {
-        if (rand() % 1000 == 0) {
-            m_ufo = shared_ptr<Ufo>(new Ufo(550, 60, -m_speed));
+        if (rand() % 2000 == 0) {
+            m_ufo = shared_ptr<Ufo>(new Ufo(550, 60, -m_speed / 2));
             m_sound_manager->ufoCreating();
         }
-        else if (rand() % 1000 == 1) {
-            m_ufo = shared_ptr<Ufo>(new Ufo(0, 60, m_speed));
+        else if (rand() % 2000 == 1) {
+            m_ufo = shared_ptr<Ufo>(new Ufo(1, 60, m_speed / 2));
             m_sound_manager->ufoCreating();
         }
     }
@@ -337,41 +342,43 @@ void Game::checkDifficult() {
 }
 
 void Game::update() {
-    if (!m_is_pause && !m_player->is_dying()) {
+    if (!m_is_pause) {
         updatePlayer();
-        updatePlayerBullet();
 
-        updateEnemies();
-        checkDifficult();
+        if (!m_player->is_dying() && !m_player->is_dead()) {
+            updatePlayerBullet();
 
-        updateEnemyBullets();
+            updateEnemies();
+            checkDifficult();
 
-        updateUfo();
+            updateEnemyBullets();
 
-        if (m_enemies.size() == 0) {
-            create_enemies();
-            m_lives++;
+            updateUfo();
+
+            if (m_enemies.size() == 0) {
+                create_enemies();
+                m_lives++;
+            }
+
+            m_frame_count = (m_frame_count == 23) ? 0 : m_frame_count + 1;
         }
 
-        m_frame_count = (m_frame_count == 23) ? 0 : m_frame_count + 1;
-    }
-    else if (m_player->is_dead()) {
-        m_lives--;
-        if (m_lives == 0) {
-            endgame();
-        }
-        else {
-            m_player->relive();
+        else if (m_player->is_dead()) {
+            m_lives--;
+            if (m_lives == 0) {
+                endgame();
+            }
+            else {
+                m_player->relive();
+            }
         }
     }
 }
 
 void Game::endgame() {
     m_endgame = true;
-    if (m_score > m_highscore) {
-        m_highscore = m_score;
-        writeHighScore(source_path + "/high_scores.txt");
-    }
+    m_enemy_bullets.clear();
+    m_player_bullet = nullptr;
 }
 
 bool Game::is_endgame() {
@@ -387,7 +394,7 @@ void Game::unmute() {
 }
 
 bool Game::is_muted() {
-    return m_sound_manager->is_playing();
+    return !m_sound_manager->is_playing();
 }
 
 Game::~Game() {

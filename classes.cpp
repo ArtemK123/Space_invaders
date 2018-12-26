@@ -85,9 +85,8 @@ Movable_Object::Movable_Object(int x, int y, int dx, int dy)
 }
 
 bool Movable_Object::checkMapCollision(int map_width, int map_height) {
-
-    if (m_x < 0 || m_x + m_width > map_width ||
-        m_y < 0 || m_y + m_height > map_height)
+    if (m_x <= 0 || m_x + m_width >= map_width ||
+        m_y <= 0 || m_y + m_height >= map_height)
     {
         return true;
     }

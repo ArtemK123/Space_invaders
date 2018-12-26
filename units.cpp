@@ -48,7 +48,7 @@ Enemy_1::Enemy_1(int x, int y, int dx, int dy)
     this->m_width = 17;
     this->m_height = 16;
     this->m_points = 40;
-    QPixmap sprite_sheet(":/sources/sprite_sheet.png");
+    QPixmap sprite_sheet(":/sources/images/sprite_sheet.png");
     QPixmap image1 = sprite_sheet.copy(6, 225, 17, 16);
     QPixmap image2 = sprite_sheet.copy(39, 225, 17, 16);
     m_images.push_back(unique_ptr<QPixmap>(new QPixmap(image1)));
@@ -74,7 +74,7 @@ Enemy_2::Enemy_2(int x, int y, int dx, int dy)
     this->m_width = 23;
     this->m_height = 16;
     this->m_points = 20;
-    QPixmap sprite_sheet(":/sources/sprite_sheet.png");
+    QPixmap sprite_sheet(":/sources/images/sprite_sheet.png");
     QPixmap image1 = sprite_sheet.copy(106, 225, 23, 16);
     QPixmap image2 = sprite_sheet.copy(73, 225, 23, 16);
     m_images.push_back(unique_ptr<QPixmap>(new QPixmap(image1)));
@@ -100,7 +100,7 @@ Enemy_3::Enemy_3(int x, int y, int dx, int dy)
     this->m_width = 23;
     this->m_height = 16;
     this->m_points = 10;
-    QPixmap sprite_sheet(":/sources/sprite_sheet.png");
+    QPixmap sprite_sheet(":/sources/images/sprite_sheet.png");
     QPixmap image1 = sprite_sheet.copy(146, 226, 23, 16);
     QPixmap image2 = sprite_sheet.copy(178, 226, 23, 16);
     m_images.push_back(unique_ptr<QPixmap>(new QPixmap(image1)));
@@ -127,15 +127,24 @@ Ufo::Ufo(int x, int y, int dx, int dy)
 {
     m_width = 49;
     m_height = 22;
-    QPixmap sprite_sheet(":/sources/sprite_sheet.png");
+    QPixmap sprite_sheet(":/sources/images/sprite_sheet.png");
     m_image = unique_ptr<QPixmap>(new QPixmap(sprite_sheet.copy(214, 223, 49, 22)));
     int points[] = {10, 50, 100, 500};
     m_points = points[rand() % 4];
 }
 
 void Ufo::kill() {
-    m_dead = true;
+    m_frame_count = 30;
     m_dying = true;
+}
+
+void Ufo::update() {
+    if (m_dying && m_frame_count == 0) {
+        m_dead = true;
+    }
+    else if (m_frame_count > 0) {
+        m_frame_count--;
+    }
 }
 
 Ufo::~Ufo() {
@@ -151,7 +160,7 @@ Player::Player(int x, int y, int speed)
     m_width = 26;
     m_height = 16;
     m_dead = false;
-    QPixmap sprite_sheet(":/sources/sprite_sheet.png");
+    QPixmap sprite_sheet(":/sources/images/sprite_sheet.png");
     QPixmap image1 = sprite_sheet.copy(277, 228, 26, 16);
     QPixmap image2 = sprite_sheet.copy(367, 275, 26, 16);
     m_image = unique_ptr<QPixmap>(new QPixmap(image1));
@@ -176,12 +185,21 @@ QPixmap Player::getDefaultPicture() {
     return *m_image;
 }
 
+void Player::update() {
+    if (m_dying && m_frame_count == 0) {
+        m_dead = true;
+    }
+    else if (m_frame_count > 0) {
+        m_frame_count--;
+    }
+
+}
+
 void Player::draw(QPainter& painter) {
     if (!m_dying) {
         painter.drawPixmap(m_x, m_y, *m_image);
     }
     else if (m_frame_count > 0) {
-        m_frame_count--;
         if (m_frame_count / 10 % 2 == 0) {
             painter.drawPixmap(m_x, m_y, *m_image);
         }
@@ -190,7 +208,6 @@ void Player::draw(QPainter& painter) {
         }
     }
     else if (m_frame_count == 0) {
-        m_dead = true;
         painter.drawPixmap(m_x, m_y, *m_dead_image);
     }
 }

@@ -52,4 +52,10 @@ public:
     virtual ~IScored() = default;
 };
 
+class ILogic {
+public:
+    virtual void update() = 0;
+    virtual ~ILogic() = default;
+};
+
 #endif // INTERFACES_H

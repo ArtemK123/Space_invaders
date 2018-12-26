@@ -9,6 +9,7 @@
 #include "sound.h"
 #include <QKeyEvent>
 #include <iostream>
+#include "record_file.h"
 
 class Game {
 protected:
@@ -21,6 +22,7 @@ protected:
     shared_ptr<Bullet> m_player_bullet;
     vector<shared_ptr<Bullet>> m_enemy_bullets;    
     shared_ptr<Pressed_Buttons> m_buttons;
+    QObject* m_parent;
 
     const string source_path = "./../Space_invaders/sources";
 
@@ -36,8 +38,7 @@ protected:
     void printNumber(int value, int start_x, int start_y, QPainter& painter);
     void printScore(QPainter& painter);
     void printTitle(QPainter& painter);
-    void readHighScore(string path);
-    void writeHighScore(string path);
+    void readHighScore();
     void create_enemies();
     void create_textures();
     void updatePlayer();
@@ -55,13 +56,14 @@ public:
     void start();
     void pause();
     void update();
+    int getScore();
     void mute();
     void unmute();
     bool is_muted();
     void endgame();
     void draw(QPainter& painter);
 
-    Game(shared_ptr<Pressed_Buttons> buttons);
+    Game(shared_ptr<Pressed_Buttons> buttons, QObject* parent);
     ~Game();
 };
 

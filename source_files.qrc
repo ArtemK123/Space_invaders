@@ -1,7 +1,11 @@
 <RCC>
     <qresource prefix="/">
-        <file>sources/sprite_sheet.png</file>
-        <file>sources/title.png</file>
+        <file>sources/images/sprite_sheet.png</file>
+        <file>sources/images/title.png</file>
+        <file>sources/images/enemy1.png</file>
+        <file>sources/images/enemy2.png</file>
+        <file>sources/images/enemy3.png</file>
+        <file>sources/images/ufo.png</file>
         <file>sources/sounds/explosion.wav</file>
         <file>sources/sounds/fastinvader1.wav</file>
         <file>sources/sounds/fastinvader2.wav</file>
@@ -9,8 +13,6 @@
         <file>sources/sounds/fastinvader4.wav</file>
         <file>sources/sounds/invaderkilled.wav</file>
         <file>sources/sounds/shoot.wav</file>
-        <file>sources/sounds/spaceinvaders1.mpeg</file>
-        <file>sources/sounds/spaceinvaders2.ram</file>
         <file>sources/sounds/ufo_highpitch.wav</file>
         <file>sources/sounds/ufo_lowpitch.wav</file>
     </qresource>

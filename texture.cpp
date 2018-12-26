@@ -1,4 +1,3 @@
-
 #include "texture.h"
 
 Texture::Texture(int x, int y) :
@@ -11,7 +10,7 @@ Texture::Texture(int x, int y) :
     this->m_y_blocks = 4;
     this->m_block_width = m_width / m_x_blocks;
     this->m_block_height = m_height / m_y_blocks;
-    QPixmap sprite_sheet(":/sources/sprite_sheet.png");
+    QPixmap sprite_sheet(":/sources/images/sprite_sheet.png");
     m_image = unique_ptr<QPixmap>(new QPixmap(sprite_sheet.copy(316, 213, 44, 32)));
     this->m_matrix = new int*[static_cast<size_t>(m_x_blocks)];
     for (int i = 0; i < m_x_blocks; i++) {
