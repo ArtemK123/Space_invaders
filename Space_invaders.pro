@@ -27,17 +27,16 @@ CONFIG += c++11
 
 SOURCES += \
     main.cpp \
-    classes.cpp \
     texture.cpp \
     units.cpp \
     bullets.cpp \
     window.cpp \
     game.cpp \
     sound.cpp \
-    record_file.cpp
+    record_file.cpp \
+    base_classes.cpp
 
 HEADERS += \
-    classes.h \
     texture.h \
     units.h \
     bullets.h \
@@ -45,7 +44,8 @@ HEADERS += \
     game.h \
     interfaces.h \
     sound.h \
-    record_file.h
+    record_file.h \
+    base_classes.h
 
 FORMS += \
     menu.ui \
@@ -62,17 +62,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RESOURCES += \
     source_files.qrc
 
-DISTFILES += \
-    sources/sprite_sheet.png \
-    sources/high_scores.txt \
-    sources/sounds/spaceinvaders2.ram \
-    sources/sounds/explosion.wav \
-    sources/sounds/fastinvader1.wav \
-    sources/sounds/fastinvader2.wav \
-    sources/sounds/fastinvader3.wav \
-    sources/sounds/fastinvader4.wav \
-    sources/sounds/invaderkilled.wav \
-    sources/sounds/shoot.wav \
-    sources/sounds/ufo_highpitch.wav \
-    sources/sounds/ufo_lowpitch.wav \
-    sources/sounds/spaceinvaders1.mpeg
+

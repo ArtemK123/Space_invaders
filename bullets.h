@@ -1,7 +1,7 @@
 #ifndef BULLETS_H
 #define BULLETS_H
 
-#include "classes.h"
+#include "base_classes.h"
 
 class Bullet : public Movable_Object, public Drawable_Object {
 public:

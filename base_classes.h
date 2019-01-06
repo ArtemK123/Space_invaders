@@ -3,7 +3,6 @@
 
 #include <QWidget>
 #include <QPainter>
-//#include <vector>
 #include "interfaces.h"
 
 

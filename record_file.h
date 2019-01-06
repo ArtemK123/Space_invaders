@@ -5,11 +5,10 @@
 
 using namespace std;
 
-class Record_file {
+class Record_File {
 public:
-    const static string path;
-    static vector<pair<string, int>> getRecords();
-    static void writeRecords(vector<pair<string, int>>);
+    static vector<pair<string, int>> getRecords(string path);
+    static void writeRecords(vector<pair<string, int>>, string path);
 };
 
 #endif // RECORD_FILE_H

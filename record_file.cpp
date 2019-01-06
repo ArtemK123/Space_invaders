@@ -1,10 +1,8 @@
 #include "record_file.h"
 #include <fstream>
 
-const string Record_file::path = "./../Space_invaders/sources/high_scores.txt";
-
-vector<pair<string, int>> Record_file::getRecords() {
-    ifstream file(Record_file::path);
+vector<pair<string, int>> Record_File::getRecords(string path) {
+    ifstream file(path);
     if (!file.is_open()) {
         throw string("Error while opening high scores file on reading");
     }
@@ -30,8 +28,8 @@ vector<pair<string, int>> Record_file::getRecords() {
     return vect;
 }
 
-void Record_file::writeRecords(vector<pair<string, int>> records) {
-    ofstream file(Record_file::path);
+void Record_File::writeRecords(vector<pair<string, int>> records, string path) {
+    ofstream file(path);
     if (!file.is_open()) {
         throw string("Error while opening high scores file on writing");
     }

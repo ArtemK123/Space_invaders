@@ -1,16 +1,18 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-#include "classes.h"
+#include "base_classes.h"
 #include "bullets.h"
 
 class Texture : public Drawable_Object {
-public:
+protected:
     int** m_matrix;
     int m_y_blocks;
     int m_x_blocks;
     int m_block_width;
     int m_block_height;
+
+public:
     void draw(QPainter& painter) override;
     void refill();
     QPixmap getPicture(int i, int j);

@@ -11,7 +11,7 @@ Window::Window(QWidget *parent) :
     ui(new Ui::Window)
 {
     m_buttons = shared_ptr<Pressed_Buttons>(new Pressed_Buttons());
-    m_game = unique_ptr<Game>(new Game(m_buttons, this));
+    m_game = unique_ptr<Game>(new Game(this, m_buttons, m_source_path));
 
     this->setFixedSize(m_game->m_board_width, m_game->m_board_height);
 
@@ -135,7 +135,7 @@ void Window::showNewRecord() {
 void Window::showRecordsTable() {
     m_ui_records->container->setEnabled(true);
     m_ui_records->container->show();
-    vector<pair<string, int>> records = Record_file::getRecords();
+    vector<pair<string, int>> records = Record_File::getRecords(m_source_path + "high_scores.txt");
     string text;
     m_ui_records->nameBox->clear();
     m_ui_records->scoreBox->clear();
@@ -174,7 +174,7 @@ void Window::new_record_button_pressed() {
 }
 
 void Window::addRecord(pair<string, int> new_record) {
-    vector<pair<string, int>> records = Record_file::getRecords();
+    vector<pair<string, int>> records = Record_File::getRecords(m_source_path + "high_scores.txt");
     bool found = false;
     for (int i = 0; i < static_cast<int>(records.size()); i++) {
         if (new_record.second >= records[static_cast<size_t>(i)].second) {
@@ -190,7 +190,7 @@ void Window::addRecord(pair<string, int> new_record) {
     if (records.size() > 19) {
         records.erase(records.begin() + static_cast<int>((records.size() - 1)));
     }
-    Record_file::writeRecords(records);
+    Record_File::writeRecords(records, m_source_path + "high_scores.txt");
 }
 
 

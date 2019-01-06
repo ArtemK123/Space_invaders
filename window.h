@@ -34,6 +34,7 @@ private:
     shared_ptr<Ui_Records> m_ui_records;
     shared_ptr<Ui_NewRecord> m_ui_new_record;
 
+    string m_source_path = "./sources/";
 
     unique_ptr<QTimer> m_timer;
     unique_ptr<Game> m_game;

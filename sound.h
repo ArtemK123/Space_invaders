@@ -15,7 +15,7 @@ protected:
     vector<shared_ptr<QMediaContent>> m_media;
 
     int m_frame_count;
-    const string source_path = "./../Space_invaders/sources/sounds/";
+    string m_source_path;
     bool m_playing;
 
 public:
@@ -29,7 +29,7 @@ public:
     void stop();
     bool is_playing();
 
-    Sound_Manager(QObject* parent);
+    Sound_Manager(QObject* parent, string sound_directory);
     ~Sound_Manager();
 };
 
